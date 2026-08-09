@@ -2,13 +2,13 @@
 
 ## 目前狀態
 
-- C-002（2026-08-09）：本地 GAS web app deployment 設定完成，等待外部建立與部署。
-- 範圍：Webhook／Review manifest access、執行身分、Webhook outbound URL allowlist 與契約驗證。
+- C-003（2026-08-09）：雙 GAS projects、source push 與 @1 deployment 完成，等待 runtime 設定與真實 access 驗收。
+- 範圍：Webhook 8 檔與 Review 4 檔已推送；兩個 standalone web app deployment 已建立。
 - 驗證：`npm test` 16/16 通過；`npm run verify` 通過。
 
 ## 進行中
 
-- 真實 GAS、LINE、Gemini、Google Sheet 與 Review deployment 整合驗收。
+- 真實 HTTP access、Google Sheet、setup functions、Script Properties、LINE、Gemini 與 Review deployment 整合驗收。
 
 ## 下一步
 
@@ -19,4 +19,4 @@
 
 - 真實 token、API key、Sheet ID 與部署 URL 不進入 Git。
 - 原圖不持久保存。
-- 尚未建立或部署任何外部資源，也未執行真實 API 呼叫。
+- 已建立並部署兩個 GAS project；尚未設定 Script Properties、執行 setup、建立 Sheet／LINE 資源或執行真實 API 呼叫。

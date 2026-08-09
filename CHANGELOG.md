@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### C-003 — 2026-08-09
+
+- 建立兩個獨立 standalone GAS projects，分別推送 Webhook 8 檔與 Review 4 檔。
+- 兩個 project 均建立 @1 initial web app deployment。
+- 尚未驗證 deployment HTTP access，也未建立 Sheet、執行 setup、設定 Script Properties 或建立 LINE channel。
+
 ### C-002 — 2026-08-09
 
 - Webhook manifest 固定為匿名可呼叫、由 deployer 執行；Review manifest 固定為僅 deployer 可呼叫、由 deployer 執行。

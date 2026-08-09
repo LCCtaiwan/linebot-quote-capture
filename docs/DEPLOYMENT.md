@@ -97,7 +97,8 @@ Webhook 下載 LINE 圖片時使用 `api-data.line.me`；Gemini key 透過 `x-go
 
 - C-002 離線測試：`npm test` 16/16 通過，包含 Gemini REST payload 與雙 manifest 部署契約測試。
 - C-002 靜態驗證：`npm run verify` 通過。
-- 尚未執行：真實 GAS 部署、LINE webhook、Gemini 圖像辨識、Google Sheet 寫入與 Review 帳號權限驗收。
+- C-003：兩個 standalone GAS projects 已建立；Webhook 8 檔與 Review 4 檔已推送；兩邊 @1 deployment 已建立成功。
+- 尚未執行：deployment HTTP access、Google Sheet、setup functions、Script Properties、LINE webhook、Gemini 圖像辨識、Sheet 寫入與 Review 帳號權限驗收。
 
 ## 8. 公開多人使用前
 

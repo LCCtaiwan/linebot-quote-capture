@@ -40,7 +40,7 @@ C-002 的離線結果為 `npm test` 16/16 通過、`npm run verify` 通過。測
 6. 把 Review URL 寫入 Webhook 專案的 `REVIEW_APP_URL`。
 7. LINE Developers webhook URL 使用：`WEBHOOK_DEPLOYMENT_URL?key=WEBHOOK_SECRET`。
 
-完整設定與驗收步驟見 `docs/DEPLOYMENT.md`。目前真實 LINE、Gemini 與部署驗收尚未執行。
+完整設定與驗收步驟見 `docs/DEPLOYMENT.md`。C-003 已建立兩個 standalone GAS projects、推送 Webhook 8 檔與 Review 4 檔，並各完成一個 @1 deployment；真實 HTTP access、Sheet、setup、Script Properties、Gemini 與 LINE 尚未驗收。
 
 ## 安全限制
 

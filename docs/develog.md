@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-準備 LINE 金句收藏 MVP 的雙 GAS web app deployment 設定，並以本地契約測試鎖定匿名 Webhook 與私人 Review 的安全邊界。
+完成 LINE 金句收藏 MVP 的雙 GAS project 建立、source push 與初始 deployment checkpoint，準備進入 runtime 設定與真實 access 驗收。
 
 ## Stack And Run Commands
 
@@ -46,6 +46,7 @@ npm run verify
 - 2026-08-09 C-001：加入 Sheet schema、預覽長度與輸入欄位驗證；Gemini key 明定由使用者自行直接放入 Script Properties。
 - 2026-08-09 C-002：依官方 manifest schema 加入 Webhook `ANYONE_ANONYMOUS`、Review `MYSELF` 與共同 `USER_DEPLOYING` 設定。
 - 2026-08-09 C-002：Webhook outbound URL allowlist 限於 LINE API、LINE Data API 與 Gemini API；新增 manifest 契約測試與 verify assertions。
+- 2026-08-09 C-003：建立兩個獨立 standalone GAS projects，推送 Webhook 8 檔與 Review 4 檔，並各建立 @1 initial web app deployment。
 
 ## Accepted / Rejected Outputs
 
@@ -56,8 +57,8 @@ npm run verify
 
 ## Current Checkpoint
 
-- C-002 本地 deployment 設定與文件同步完成；外部資源尚未建立或部署。
-- 真實 GAS、LINE、Gemini、Google Sheet 與 Review 權限整合尚未執行。
+- C-003 雙 GAS project、source push 與 @1 deployment 完成。
+- 真實 HTTP access、Google Sheet、setup、Script Properties、LINE、Gemini 與 Review 權限整合尚未執行。
 
 ## Recommended Next Step
 
