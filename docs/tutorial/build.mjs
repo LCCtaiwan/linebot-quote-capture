@@ -150,7 +150,7 @@ const pages = [
 const list = (items) => items?.length ? `<ul class="bullet-list">${items.map((item) => `<li>${htmlEscape(item)}</li>`).join('')}</ul>` : '';
 const code = (items) => items?.length ? `<pre class="code-card"><code>${items.map((item) => htmlEscape(item)).join('\n')}</code></pre>` : '';
 const notes = (text, kind = 'note') => text ? `<div class="notice ${kind}"><span>${kind === 'warning' ? '!' : 'i'}</span><p>${htmlEscape(text)}</p></div>` : '';
-const columns = (items) => items?.length ? `<div class="info-grid">${items.map(([title, values]) => `<article class="info-card"><h3>${htmlEscape(title)}</h3>${list(values)}</article>`).join('')}</div>` : '';
+const columns = (items) => items?.length ? `<div class="info-grid">${items.map(([title, values]) => `<article class="info-card" style="color:var(--text)"><h3>${htmlEscape(title)}</h3>${list(values)}</article>`).join('')}</div>` : '';
 const table = (rows) => rows?.length ? `<div class="property-table"><div class="property-head"><span>專案</span><span>Property names</span></div>${rows.map(([project, values]) => `<div class="property-row"><b>${htmlEscape(project)}</b><span>${values}</span></div>`).join('')}</div>` : '';
 const shot = (item) => item ? `<figure class="shot"><img src="${item.src}" alt="${htmlEscape(item.alt)}"><figcaption>${htmlEscape(item.alt)}</figcaption></figure>` : '';
 const checks = (items, id) => `<div class="completion"><h3>這一步的驗收</h3>${(items || []).map((item, index) => `<label class="check-row"><input type="checkbox" data-check="${id}-${index}"><span>${htmlEscape(item)}</span></label>`).join('')}</div>`;

@@ -5,6 +5,7 @@
 - C-009（2026-08-09）：修正 Gemini 3.x structured output 的 `mimeType` enum，Webhook 已部署至最新版本；真實 Events 已確認原先 400 原因。
 - C-006：Review OAuth、`SPREADSHEET_ID` 與真實 Sheet 讀取驗收完成；空資料狀態顯示「共 0 則收藏」。
 - 教學：已建立 `docs/tutorial/content.md`、`style-directions.md`、`build.mjs` 與單檔 `quote-capture-guide.html`，沿用既有 LINE Bot 教材的「任務工作台」方向；課程 validator 與桌面互動驗收 pass。
+- C-011：已修正淺色資訊卡白字造成的空白感，重新建置 HTML 並確認文字色可讀。
 - 驗證：`npm test` 22/22、`npm run verify` pass；Webhook／Review／Sheet schema 與 LINE 開關已完成，Gemini 修正後的成功圖片流程待再次確認。
 
 ## 進行中

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### C-011 — 2026-08-09
+
+- 修正教學 HTML 淺色資訊卡沿用白字的可讀性問題；右側 Webhook／Review／Sheet 卡片現在使用深色文字。
+- 重新建置並驗證 `quote-capture-guide.html`；課程 validator 12/12 pass，瀏覽器檢查確認卡片文字色與背景對比正常。
+
 ### C-009 — 2026-08-09
 
 - 依真實 Events 錯誤修正 Gemini 3.x structured output 的 `mimeType`，由 `application/json` 改為 API enum `APPLICATION_JSON`。

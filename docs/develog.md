@@ -59,6 +59,7 @@ npm run verify
 - 2026-08-09 C-010：找到並研究既有 `clinical-automation-course` LINE Bot 教材，建立本專案 `docs/tutorial/content.md`、`style-directions.md` 與 README；沿用 C｜任務工作台。
 - 2026-08-09 C-010：新增 `docs/tutorial/build.mjs` 與單檔 `quote-capture-guide.html`，內嵌 4 張不含機密的操作截圖；新增 MIT `LICENSE`。
 - 2026-08-09 C-010：課程 validator 12/12 pass、無外部資源與缺失 DOM 參照；桌面導覽、勾選、講義模式、Enter 鍵操作 pass；CSS 760px breakpoint 已檢查，瀏覽器控制介面未提供 viewport 設定。
+- 2026-08-09 C-011：使用者回報右側淺色資訊卡「有字但是空白」；確認原因是卡片沿用 body 的白字，加入深色文字覆寫，瀏覽器計算色彩與截圖驗收 pass。
 
 ## Accepted / Rejected Outputs
 
