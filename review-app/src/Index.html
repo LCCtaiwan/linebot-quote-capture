@@ -1,0 +1,284 @@
+<div id="quote-app">
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">PERSONAL QUOTE LIBRARY</p>
+      <h1>金句收藏庫</h1>
+    </div>
+    <button id="random-button" type="button">隨機回顧</button>
+  </header>
+
+  <section class="controls" aria-label="搜尋與篩選">
+    <label>
+      <span>搜尋</span>
+      <input id="search-input" type="search" placeholder="金句、來源或標籤" autocomplete="off">
+    </label>
+    <label>
+      <span>分類</span>
+      <select id="category-select">
+        <option value="">全部分類</option>
+        <option>工作學習</option>
+        <option>健康醫療</option>
+        <option>人際生活</option>
+        <option>理財投資</option>
+        <option>創意靈感</option>
+        <option>其他</option>
+      </select>
+    </label>
+    <label>
+      <span>標籤</span>
+      <select id="tag-select">
+        <option value="">全部標籤</option>
+      </select>
+    </label>
+  </section>
+
+  <div class="result-line">
+    <p id="result-count">讀取收藏中…</p>
+    <button id="show-all-button" type="button" hidden>顯示全部</button>
+  </div>
+
+  <main id="quote-list" aria-live="polite"></main>
+</div>
+
+<style>
+  :root {
+    color-scheme: light dark;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: light-dark(#f6f3ec, #171716);
+    color: light-dark(#20201e, #f3f0e9);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: inherit; }
+  button, input, select { font: inherit; }
+  button { cursor: pointer; }
+
+  #quote-app {
+    width: min(920px, 100%);
+    margin: 0 auto;
+    padding: 28px 20px 56px;
+  }
+
+  .app-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 0 26px;
+    border-bottom: 1px solid light-dark(#cbc5b9, #3a3935);
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    color: light-dark(#766c5e, #b8ad9e);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+  }
+
+  h1 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: clamp(30px, 6vw, 48px); }
+
+  #random-button,
+  #show-all-button {
+    border: 1px solid light-dark(#272521, #d3cabe);
+    border-radius: 999px;
+    padding: 10px 16px;
+    background: light-dark(#272521, #eee8dd);
+    color: light-dark(#fff, #20201e);
+    font-weight: 700;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
+    padding: 22px 0;
+  }
+
+  label span {
+    display: block;
+    margin-bottom: 6px;
+    color: light-dark(#6f685f, #bcb5aa);
+    font-size: 13px;
+  }
+
+  input, select {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid light-dark(#c9c2b6, #484640);
+    border-radius: 10px;
+    padding: 9px 12px;
+    background: light-dark(#fffdf8, #232321);
+    color: inherit;
+  }
+
+  .result-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    color: light-dark(#6f685f, #bcb5aa);
+    font-size: 14px;
+  }
+
+  #quote-list { display: grid; gap: 14px; }
+
+  .quote-card {
+    padding: 22px;
+    border: 1px solid light-dark(#d5cec2, #403f3a);
+    border-radius: 16px;
+    background: light-dark(#fffdf8, #222220);
+  }
+
+  .quote-text {
+    margin: 0 0 18px;
+    font-family: Georgia, "Noto Serif TC", serif;
+    font-size: clamp(19px, 3vw, 24px);
+    line-height: 1.7;
+  }
+
+  .quote-meta { margin: 0 0 12px; color: light-dark(#766e63, #bdb5aa); font-size: 14px; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 7px; }
+  .tag {
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: light-dark(#eee8dc, #34322e);
+    color: light-dark(#5b5349, #ded6ca);
+    font-size: 12px;
+  }
+
+  .empty-state {
+    padding: 56px 20px;
+    text-align: center;
+    color: light-dark(#766e63, #bdb5aa);
+    border: 1px dashed light-dark(#c9c2b6, #484640);
+    border-radius: 16px;
+  }
+
+  @media (max-width: 640px) {
+    #quote-app { padding: 18px 14px 42px; }
+    .app-header { align-items: center; }
+    .controls { grid-template-columns: 1fr 1fr; }
+    .controls label:first-child { grid-column: 1 / -1; }
+    .quote-card { padding: 18px; }
+  }
+</style>
+
+<script>
+  (function () {
+    var allQuotes = [];
+    var randomOnly = false;
+    var list = document.getElementById('quote-list');
+    var count = document.getElementById('result-count');
+    var search = document.getElementById('search-input');
+    var category = document.getElementById('category-select');
+    var tag = document.getElementById('tag-select');
+    var randomButton = document.getElementById('random-button');
+    var showAllButton = document.getElementById('show-all-button');
+
+    function text(value) {
+      return String(value || '').toLocaleLowerCase('zh-Hant');
+    }
+
+    function sourceLine(quote) {
+      return [quote.sourceTitle, quote.sourceAuthor, quote.createdAt]
+        .filter(Boolean)
+        .join('｜');
+    }
+
+    function makeCard(quote) {
+      var article = document.createElement('article');
+      article.className = 'quote-card';
+      var quoteText = document.createElement('p');
+      quoteText.className = 'quote-text';
+      quoteText.textContent = '「' + quote.quote + '」';
+      article.appendChild(quoteText);
+
+      var meta = document.createElement('p');
+      meta.className = 'quote-meta';
+      meta.textContent = [quote.id, quote.category, sourceLine(quote)].filter(Boolean).join(' · ');
+      article.appendChild(meta);
+
+      var tags = document.createElement('div');
+      tags.className = 'tag-list';
+      quote.tags.forEach(function (value) {
+        var item = document.createElement('span');
+        item.className = 'tag';
+        item.textContent = value;
+        tags.appendChild(item);
+      });
+      article.appendChild(tags);
+      return article;
+    }
+
+    function filteredQuotes() {
+      var query = text(search.value).trim();
+      return allQuotes.filter(function (quote) {
+        var haystack = text([
+          quote.quote,
+          quote.sourceTitle,
+          quote.sourceAuthor,
+          quote.category,
+          quote.tags.join(' ')
+        ].join(' '));
+        return (!query || haystack.indexOf(query) !== -1) &&
+          (!category.value || quote.category === category.value) &&
+          (!tag.value || quote.tags.indexOf(tag.value) !== -1);
+      });
+    }
+
+    function render() {
+      var items = filteredQuotes();
+      if (randomOnly && items.length) {
+        items = [items[Math.floor(Math.random() * items.length)]];
+      }
+      list.replaceChildren();
+      count.textContent = randomOnly && items.length
+        ? '隨機回顧 1 則'
+        : '共 ' + items.length + ' 則收藏';
+      showAllButton.hidden = !randomOnly;
+
+      if (!items.length) {
+        var empty = document.createElement('p');
+        empty.className = 'empty-state';
+        empty.textContent = allQuotes.length ? '找不到符合條件的金句。' : '還沒有收藏，先從 LINE 上傳一張圖片。';
+        list.appendChild(empty);
+        return;
+      }
+      items.forEach(function (quote) { list.appendChild(makeCard(quote)); });
+    }
+
+    function setQuotes(quotes) {
+      allQuotes = Array.isArray(quotes) ? quotes : [];
+      var tags = {};
+      allQuotes.forEach(function (quote) {
+        quote.tags.forEach(function (value) { tags[value] = true; });
+      });
+      Object.keys(tags).sort().forEach(function (value) {
+        var option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        tag.appendChild(option);
+      });
+      render();
+    }
+
+    function showError(error) {
+      list.replaceChildren();
+      var message = document.createElement('p');
+      message.className = 'empty-state';
+      message.textContent = '無法讀取收藏：' + (error && error.message || '未知錯誤');
+      list.appendChild(message);
+      count.textContent = '讀取失敗';
+    }
+
+    [search, category, tag].forEach(function (control) {
+      control.addEventListener('input', function () { randomOnly = false; render(); });
+      control.addEventListener('change', function () { randomOnly = false; render(); });
+    });
+    randomButton.addEventListener('click', function () { randomOnly = true; render(); });
+    showAllButton.addEventListener('click', function () { randomOnly = false; render(); });
+
+    google.script.run.withSuccessHandler(setQuotes).withFailureHandler(showError).getQuoteCards();
+  })();
+</script>

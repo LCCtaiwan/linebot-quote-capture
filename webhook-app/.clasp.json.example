@@ -1,0 +1,4 @@
+{
+  "scriptId": "YOUR_WEBHOOK_SCRIPT_ID",
+  "rootDir": "src"
+}
