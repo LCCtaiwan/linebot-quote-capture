@@ -45,11 +45,12 @@
 
 **畫面文字**
 
-- Webhook GAS：匿名接收 LINE、呼叫 Gemini、寫入 Sheet；沒有讀取收藏的 `doGet`
-- Review GAS：僅本人登入；讀取同一份 Sheet；沒有匿名 `doPost`
+- LINE webhook 是「收件門」：LINE 必須能把事件送進來，不能要求 Google 登入
+- Review 是「私人書櫃」：會顯示收藏內容，只允許本人 Google 登入
+- Webhook GAS 沒有讀取收藏的 `doGet`；Review GAS 沒有匿名寫入的 `doPost`
 - Google Sheet：`Quotes` 是收藏權威；`Events` 是審計紀錄
 
-**講者補充**：分開部署避免匿名 webhook 變成資料讀取入口。
+**講者補充**：如果把兩者放進同一個匿名 project，為了讓 LINE 進得來，Review 也可能被同一扇匿名門暴露；分成兩個 project，才能在 Apps Script manifest 層固定「Webhook 任何人可呼叫、Review 只有我自己」。兩個 project 只共享 Sheet，不共享公開入口。
 
 **互動**：點 Webhook／Review／Sheet 節點→ 顯示各自允許與禁止的操作；列印版保留完整架構圖。
 

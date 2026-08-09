@@ -29,12 +29,14 @@ const pages = [
   },
   {
     id: 'architecture', number: '02', kicker: 'ARCHITECTURE / 先看邊界', title: '為什麼要分成兩個 GAS project？',
-    intro: '匿名的 LINE webhook 與需要 Google 登入的 Review 頁，不應共用同一個匿名讀取入口。',
+    intro: '把它想成兩種門：LINE 需要能送進「收件門」，Review 卻只能讓本人打開「私人書櫃」。',
     columns: [
-      ['Webhook GAS', ['匿名接收 LINE、呼叫 Gemini、寫入 Sheet', '沒有讀取收藏的 doGet']],
-      ['Review GAS', ['只限本人登入、讀取同一份 Sheet', '沒有匿名 doPost']],
-      ['Google Sheet', ['Quotes：收藏權威資料', 'Events：事件與錯誤審計紀錄']]
+      ['Webhook GAS｜收件門', ['LINE 可以送事件進來', '呼叫 Gemini、寫入 Sheet', '不提供讀取收藏的 doGet']],
+      ['Review GAS｜私人書櫃', ['Google 登入後才能看收藏', '搜尋、篩選、隨機回顧', '不接受匿名 doPost']],
+      ['Google Sheet｜共同資料庫', ['Quotes：收藏的權威資料', 'Events：事件與錯誤審計紀錄', '只共享資料，不共享公開網址']]
     ],
+    bullets: ['若合併成一個匿名 project：LINE 進得來，但陌生人也可能找到讀取收藏的入口。', '分開後：Webhook manifest 是「任何人可呼叫」，Review manifest 是「只有我自己」。', '所以不是為了多寫一份程式，而是讓兩扇門有不同鎖。'],
+    warning: '記憶口訣：Webhook 收得到 ≠ Review 看得到。',
     note: '兩個 project 共用同一份 Sheet；分開部署是安全邊界，不是重複程式。',
     checks: ['我能說出 Webhook、Review、Sheet 各自的責任。']
   },

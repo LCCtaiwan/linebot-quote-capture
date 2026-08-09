@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### C-012 — 2026-08-09
+
+- 重寫教學第 02 頁，以「LINE 收件門／Review 私人書櫃」說明兩個 GAS project 的權限差異。
+- 明確列出合併成匿名 project 的風險、兩個 manifest 的存取設定，以及「只共享 Sheet、不共享公開入口」的規則。
+- 重新建置；課程 validator 12/12 pass。
+
 ### C-011 — 2026-08-09
 
 - 修正教學 HTML 淺色資訊卡沿用白字的可讀性問題；右側 Webhook／Review／Sheet 卡片現在使用深色文字。
