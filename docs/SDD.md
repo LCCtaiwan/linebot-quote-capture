@@ -9,6 +9,8 @@
 
 此拆分避免匿名 webhook deployment 暴露回顧資料。
 
+Deployment manifest 亦鎖定兩個邊界：Webhook 為 `ANYONE_ANONYMOUS`／`USER_DEPLOYING`；Review 為 `MYSELF`／`USER_DEPLOYING`。Webhook 的 `urlFetchWhitelist` 只包含 LINE Messaging API、LINE Data API 與 Gemini API 三個 HTTPS prefix；Review 不需要外部 fetch allowlist。
+
 ## 2. Webhook Data Flow
 
 1. 以 query secret、LINE user ID allowlist 與 webhook event ID 檢查事件。
@@ -93,6 +95,7 @@ Gemini 必須回傳單一 JSON object：
 - Review project 以 Google deployment 權限限制為「只有我自己」。
 - Review HTML 無 CDN、外部字型、圖床或外部連結。
 - 圖片不保存，但仍會送往 Gemini API；不得處理敏感資料。
+- Manifest 是 deployment 安全設定的 source of truth；實際部署後仍須核對 Apps Script deployment UI 與 manifest 一致。
 
 ## 8. Failure Handling
 

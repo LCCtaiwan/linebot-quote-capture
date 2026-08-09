@@ -2,9 +2,9 @@
 
 ## 目前狀態
 
-- C-001（2026-08-09）：離線實作完成，等待真實服務驗收。
-- 範圍：規格、SDD、雙 GAS 專案、LINE／Gemini／Sheet adapter、私人 Review 頁與離線測試。
-- 驗證：`npm test` 15/15 通過；`npm run verify` 通過。
+- C-002（2026-08-09）：本地 GAS web app deployment 設定完成，等待外部建立與部署。
+- 範圍：Webhook／Review manifest access、執行身分、Webhook outbound URL allowlist 與契約驗證。
+- 驗證：`npm test` 16/16 通過；`npm run verify` 通過。
 
 ## 進行中
 

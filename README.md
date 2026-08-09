@@ -28,15 +28,15 @@ npm test
 npm run verify
 ```
 
-C-001 的離線結果為 `npm test` 15/15 通過、`npm run verify` 通過。契約測試會檢查 Gemini 3.6 的 current `responseFormat.text` REST payload，但不會呼叫 LINE、Gemini、Google Sheet 或已部署的 GAS；真實整合仍須依部署指南人工驗收。
+C-002 的離線結果為 `npm test` 16/16 通過、`npm run verify` 通過。測試會檢查 Gemini 3.6 的 current `responseFormat.text` REST payload，以及 Webhook／Review 的 web app access、執行身分與 outbound URL allowlist；不會呼叫 LINE、Gemini、Google Sheet 或已部署的 GAS，真實整合仍須依部署指南人工驗收。
 
 ## 部署摘要
 
 1. 建立一份 Google Sheet。
 2. 分別建立兩個 Apps Script project，將 `webhook-app/src` 與 `review-app/src` 上傳。
 3. 使用者自行把 Gemini API key 與其他設定加入 Webhook 專案的 Script Properties，再執行 `setupWebhookProject()`；key 不應傳入對話、檔案或 Sheet。
-4. Webhook 專案部署為「執行身分：我；誰可以存取：任何人」。
-5. Review 專案設定 `SPREADSHEET_ID`，部署為「執行身分：我；誰可以存取：只有我自己」。
+4. Webhook manifest 固定為 `ANYONE_ANONYMOUS`／`USER_DEPLOYING`，並只允許存取 LINE API、LINE Data API 與 Gemini API；部署時核對 UI 為「執行身分：我；誰可以存取：任何人」。
+5. Review 專案設定 `SPREADSHEET_ID`；manifest 固定為 `MYSELF`／`USER_DEPLOYING`，部署時核對 UI 為「執行身分：我；誰可以存取：只有我自己」。
 6. 把 Review URL 寫入 Webhook 專案的 `REVIEW_APP_URL`。
 7. LINE Developers webhook URL 使用：`WEBHOOK_DEPLOYMENT_URL?key=WEBHOOK_SECRET`。
 

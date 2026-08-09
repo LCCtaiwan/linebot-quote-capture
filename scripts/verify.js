@@ -46,13 +46,24 @@ assert.match(webhookSources, /mimeType\s*:\s*['"]application\/json['"]/, 'Gemini
 assert.match(webhookSources, /schema\s*:\s*geminiResponseSchema_\(\)/, 'Gemini responseFormat must include the JSON Schema');
 assert.doesNotMatch(webhookSources, /responseJsonSchema\s*:/, 'Legacy responseJsonSchema wire shape must not be used');
 
-for (const manifestPath of [
-  path.join(webhookDir, 'appsscript.json'),
-  path.join(reviewDir, 'appsscript.json')
-]) {
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  assert.equal(manifest.runtimeVersion, 'V8');
-}
+const webhookManifest = JSON.parse(fs.readFileSync(path.join(webhookDir, 'appsscript.json'), 'utf8'));
+const reviewManifest = JSON.parse(fs.readFileSync(path.join(reviewDir, 'appsscript.json'), 'utf8'));
+assert.equal(webhookManifest.runtimeVersion, 'V8');
+assert.equal(reviewManifest.runtimeVersion, 'V8');
+assert.deepEqual(webhookManifest.webapp, {
+  access: 'ANYONE_ANONYMOUS',
+  executeAs: 'USER_DEPLOYING'
+});
+assert.deepEqual(webhookManifest.urlFetchWhitelist, [
+  'https://api.line.me/',
+  'https://api-data.line.me/',
+  'https://generativelanguage.googleapis.com/'
+]);
+assert.deepEqual(reviewManifest.webapp, {
+  access: 'MYSELF',
+  executeAs: 'USER_DEPLOYING'
+});
+assert.equal(reviewManifest.urlFetchWhitelist, undefined);
 
 const reviewHtml = fs.readFileSync(path.join(reviewDir, 'Index.html'), 'utf8');
 assert.doesNotMatch(reviewHtml, /<(?:script|link)[^>]+(?:src|href)=["']https?:/i, 'Review page must not load third-party resources');

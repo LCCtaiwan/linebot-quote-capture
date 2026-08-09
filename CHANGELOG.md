@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### C-002 — 2026-08-09
+
+- Webhook manifest 固定為匿名可呼叫、由 deployer 執行；Review manifest 固定為僅 deployer 可呼叫、由 deployer 執行。
+- Webhook `urlFetchWhitelist` 僅允許 LINE API、LINE Data API 與 Gemini API 三個官方 HTTPS prefix；Review 不加入外部 fetch allowlist。
+- 新增雙 manifest deployment 契約測試與靜態驗證；`npm test` 16/16 通過，`npm run verify` 通過。
+- 尚未建立、推送或部署任何外部 GAS 資源。
+
 ### C-001 — 2026-08-09
 
 - 建立兩個獨立 Apps Script project 的單人金句收藏 MVP：匿名 LINE webhook 與僅本人 Review 頁共用同一 Sheet。

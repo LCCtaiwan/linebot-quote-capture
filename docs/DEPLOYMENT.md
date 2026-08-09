@@ -38,6 +38,8 @@
 6. Deploy → New deployment → Web app：
    - Execute as：Me。
    - Who has access：Anyone。
+   - 上傳前確認 manifest `webapp` 為 `ANYONE_ANONYMOUS`／`USER_DEPLOYING`。
+   - 確認 `urlFetchWhitelist` 只有 `https://api.line.me/`、`https://api-data.line.me/`、`https://generativelanguage.googleapis.com/`。
 7. LINE Developers webhook URL 設為：
 
 ```text
@@ -62,6 +64,7 @@ Webhook 下載 LINE 圖片時使用 `api-data.line.me`；Gemini key 透過 `x-go
 5. Deploy → New deployment → Web app：
    - Execute as：Me。
    - Who has access：Only myself。
+   - 上傳前確認 manifest `webapp` 為 `MYSELF`／`USER_DEPLOYING`，且沒有 `urlFetchWhitelist`。
 6. 開啟 deployment URL，確認 Google 登入後可看到空資料狀態。
 7. 把這個 URL 寫入 Webhook project 的 `REVIEW_APP_URL`。
 
@@ -88,11 +91,12 @@ Webhook 下載 LINE 圖片時使用 `api-data.line.me`；Gemini key 透過 `x-go
 - Review project 不含 `doPost`。
 - Review HTML 沒有 CDN、外部字型或圖床。
 - Drive 中沒有因此專案產生的原始圖片。
+- Webhook／Review 實際 deployment access 與各自 manifest 一致；Webhook 的 outbound URL allowlist 沒有額外網域。
 
 ## 7. 目前驗證狀態
 
-- C-001 離線測試：`npm test` 15/15 通過，包含 Gemini REST payload 契約測試。
-- C-001 靜態驗證：`npm run verify` 通過。
+- C-002 離線測試：`npm test` 16/16 通過，包含 Gemini REST payload 與雙 manifest 部署契約測試。
+- C-002 靜態驗證：`npm run verify` 通過。
 - 尚未執行：真實 GAS 部署、LINE webhook、Gemini 圖像辨識、Google Sheet 寫入與 Review 帳號權限驗收。
 
 ## 8. 公開多人使用前
