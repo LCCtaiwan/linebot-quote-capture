@@ -43,9 +43,10 @@ class FakeSheet {
 }
 
 class FakeSpreadsheet {
-  constructor(id) {
+  constructor(id, { withDefaultSheet = false } = {}) {
     this.id = id;
     this.sheets = {};
+    if (withDefaultSheet) this.insertSheet('工作表1');
   }
 
   getId() {
@@ -64,9 +65,17 @@ class FakeSpreadsheet {
     this.sheets[name] = new FakeSheet(name);
     return this.sheets[name];
   }
+
+  getSheets() {
+    return Object.values(this.sheets);
+  }
+
+  deleteSheet(sheet) {
+    delete this.sheets[sheet.name];
+  }
 }
 
-function createContext({ spreadsheetId = 'test-sheet' } = {}) {
+function createContext({ spreadsheetId = 'test-sheet', existingSheetNames = [] } = {}) {
   const propertyEntries = [
     ['LINE_CHANNEL_ACCESS_TOKEN', 'test-line-token'],
     ['GEMINI_API_KEY', 'test-gemini-key'],
@@ -77,7 +86,11 @@ function createContext({ spreadsheetId = 'test-sheet' } = {}) {
   if (spreadsheetId) propertyEntries.push(['SPREADSHEET_ID', spreadsheetId]);
   const properties = new Map(propertyEntries);
   const spreadsheets = new Map();
-  if (spreadsheetId) spreadsheets.set(spreadsheetId, new FakeSpreadsheet(spreadsheetId));
+  if (spreadsheetId) {
+    const spreadsheet = new FakeSpreadsheet(spreadsheetId);
+    existingSheetNames.forEach((name) => spreadsheet.insertSheet(name));
+    spreadsheets.set(spreadsheetId, spreadsheet);
+  }
   let createCount = 0;
   const createdTitles = [];
   const lockState = { waits: 0, releases: 0 };
@@ -104,7 +117,7 @@ function createContext({ spreadsheetId = 'test-sheet' } = {}) {
         createCount += 1;
         createdTitles.push(title);
         const id = `created-sheet-${createCount}`;
-        const spreadsheet = new FakeSpreadsheet(id);
+        const spreadsheet = new FakeSpreadsheet(id, { withDefaultSheet: true });
         spreadsheets.set(id, spreadsheet);
         return spreadsheet;
       },
@@ -181,13 +194,14 @@ test('setup rejects an existing Quotes sheet with the wrong schema', () => {
 });
 
 test('setup creates a spreadsheet and stores its id when the property is missing', () => {
-  const { properties, setupResult, getCreateCount, createdTitles, lockState } =
+  const { spreadsheet, properties, setupResult, getCreateCount, createdTitles, lockState } =
     createContext({ spreadsheetId: null });
   assert.equal(getCreateCount(), 1);
   assert.deepEqual(createdTitles, ['LINE 金句收藏庫']);
   assert.equal(properties.get('SPREADSHEET_ID'), 'created-sheet-1');
   assert.equal(setupResult.status, 'ready');
   assert.match(setupResult.spreadsheetUrl, /created-sheet-1/);
+  assert.deepEqual(spreadsheet.getSheets().map((sheet) => sheet.name), ['Quotes', 'Events']);
   assert.equal(lockState.waits, 1);
   assert.equal(lockState.releases, 1);
 });
@@ -196,6 +210,12 @@ test('setup reuses an existing spreadsheet without creating another', () => {
   const { setupResult, getCreateCount } = createContext();
   assert.equal(getCreateCount(), 0);
   assert.match(setupResult.spreadsheetUrl, /test-sheet/);
+});
+
+test('setup preserves extra user tabs in an existing spreadsheet', () => {
+  const { spreadsheet, getCreateCount } = createContext({ existingSheetNames: ['My Notes'] });
+  assert.equal(getCreateCount(), 0);
+  assert.deepEqual(spreadsheet.getSheets().map((sheet) => sheet.name), ['My Notes', 'Quotes', 'Events']);
 });
 
 test('running setup twice creates at most one spreadsheet', () => {

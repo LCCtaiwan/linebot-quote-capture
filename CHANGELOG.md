@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### C-005 — 2026-08-09
+
+- Gemini 預設模型改為 `gemini-3.5-flash-lite`，用於文件擷取、結構化 JSON 與 minimal thinking；複雜版面品質不足時可手動覆寫為 `gemini-3.6-flash`。
+- 新建 Sheet 在 Quotes／Events schema 成功後刪除本次 create 產生的空白預設分頁；既有 Sheet 的額外使用者分頁一律保留。
+- OAuth 後 Sheet schema 與空白分頁清理通過；Webhook anonymous GET 200 且為預期 missing `doGet`，Review 未登入仍導向 Google login，兩個 access boundary 均 pass。
+- 驗證：`npm test` 20/20 通過，`npm run verify` 通過；使用者回報已設定 Gemini key，代理未讀取或驗證內容；尚未執行 LINE／Gemini 真實整合。
+
 ### C-004 — 2026-08-09
 
 - `setupWebhookProject()` 不再依賴 LINE／Gemini runtime secrets；缺少 `SPREADSHEET_ID` 時建立原生 `LINE 金句收藏庫` 並保存 ID，既有 ID 則重用。

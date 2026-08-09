@@ -46,11 +46,15 @@ function extractFunction(source, name) {
 }
 
 const setupWebhookSource = extractFunction(webhookConfigSource, 'setupWebhookProject');
+assert.match(webhookConfigSource, /geminiModel:\s*properties\.getProperty\(['"]GEMINI_MODEL['"]\)\s*\|\|\s*['"]gemini-3\.5-flash-lite['"]/);
 assert.doesNotMatch(setupWebhookSource, /getWebhookConfig_\s*\(/);
 assert.match(setupWebhookSource, /LockService\.getScriptLock\s*\(/);
 assert.match(setupWebhookSource, /lock\.waitLock\s*\(STATE_LOCK_WAIT_MS\)/);
 assert.match(setupWebhookSource, /SpreadsheetApp\.create\s*\(/);
 assert.match(setupWebhookSource, /setProperty\s*\(\s*['"]SPREADSHEET_ID['"]/);
+assert.match(setupWebhookSource, /initialSheet\s*=\s*spreadsheet\.getSheets\(\)\[0\]/);
+assert.match(setupWebhookSource, /initialSheet\s*&&\s*spreadsheet\.getSheets\(\)\.length\s*>\s*2/);
+assert.match(setupWebhookSource, /spreadsheet\.deleteSheet\(initialSheet\)/);
 assert.match(setupWebhookSource, /finally\s*\{/);
 assert.match(setupWebhookSource, /lock\.releaseLock\s*\(/);
 const reviewSources = fs.readdirSync(reviewDir)
@@ -63,7 +67,7 @@ assert.doesNotMatch(reviewSources, /function\s+doPost\s*\(/, 'Review project mus
 assert.doesNotMatch(webhookSources, /CacheService/, 'Pending state must not use CacheService');
 assert.doesNotMatch(webhookSources, /DriveApp/, 'Original images must not be persisted to Drive');
 assert.match(webhookSources, /https:\/\/api-data\.line\.me\/v2\/bot/, 'LINE content downloads must use api-data.line.me');
-assert.doesNotMatch(webhookSources, /\btemperature\s*:/, 'Gemini 3.6 must not receive deprecated sampling parameters');
+assert.doesNotMatch(webhookSources, /\btemperature\s*:/, 'Gemini request must not receive deprecated sampling parameters');
 assert.match(webhookSources, /responseFormat\s*:\s*\{/, 'Gemini structured output must use responseFormat');
 assert.match(webhookSources, /mimeType\s*:\s*['"]application\/json['"]/, 'Gemini responseFormat must request JSON');
 assert.match(webhookSources, /schema\s*:\s*geminiResponseSchema_\(\)/, 'Gemini responseFormat must include the JSON Schema');

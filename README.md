@@ -28,19 +28,19 @@ npm test
 npm run verify
 ```
 
-C-004 的離線結果為 `npm test` 19/19 通過、`npm run verify` 通過。`setupWebhookProject()` 可在沒有任何 secret 或既有 Script Property 時建立原生 `LINE 金句收藏庫`、保存 `SPREADSHEET_ID` 並建立／驗證 `Quotes`、`Events`；ScriptLock 確保重複執行重用同一份 Sheet。
+C-005 的離線結果為 `npm test` 20/20 通過、`npm run verify` 通過。`setupWebhookProject()` 可在沒有任何 secret 或既有 Script Property 時建立原生 `LINE 金句收藏庫`、保存 `SPREADSHEET_ID` 並建立／驗證 `Quotes`、`Events`；只有本次新建的 Sheet 會清除其空白預設分頁，既有 Sheet 的使用者分頁一律保留。
 
 ## 部署摘要
 
 1. 分別建立兩個 Apps Script project，將 `webhook-app/src` 與 `review-app/src` 上傳。
 2. Webhook owner 在 Apps Script editor 手動執行 `setupWebhookProject()` 並完成首次 OAuth；程式會建立或重用 Sheet，不需先提供 LINE／Gemini secrets。
-3. 使用者日後自行把 Gemini API key 與其他 runtime 設定加入 Webhook Script Properties；key 不應傳入對話、檔案或 Sheet。
+3. 使用者日後自行把 Gemini API key 與其他 runtime 設定加入 Webhook Script Properties；預設模型為 `gemini-3.5-flash-lite`，複雜版面品質不足時可用 `GEMINI_MODEL` 覆寫為 `gemini-3.6-flash`。key 不應傳入對話、檔案或 Sheet。
 4. Webhook manifest 固定為 `ANYONE_ANONYMOUS`／`USER_DEPLOYING`，並只允許存取 LINE API、LINE Data API 與 Gemini API；部署時核對 UI 為「執行身分：我；誰可以存取：任何人」。
 5. Review 專案設定 `SPREADSHEET_ID`；manifest 固定為 `MYSELF`／`USER_DEPLOYING`，部署時核對 UI 為「執行身分：我；誰可以存取：只有我自己」。
 6. 把 Review URL 寫入 Webhook 專案的 `REVIEW_APP_URL`。
 7. LINE Developers webhook URL 使用：`WEBHOOK_DEPLOYMENT_URL?key=WEBHOOK_SECRET`。
 
-完整設定與驗收步驟見 `docs/DEPLOYMENT.md`。Review 未登入請求 302 導向 Google login，權限邊界 `pass`；Webhook anonymous GET 為 403 access denied，暫列 `revise`。依 Apps Script 授權規則，owner 必須先在 editor 手動執行 function 完成新增 scopes 的首次 OAuth，再重測 Webhook；不可在授權前斷言 deployment access 或帳號政策。
+完整設定與驗收步驟見 `docs/DEPLOYMENT.md`。OAuth 後 Sheet schema 與空白預設分頁清理均通過；Review 未登入請求 302 導向 Google login，權限邊界 `pass`；Webhook anonymous GET 回 200 且顯示預期的 missing `doGet`，匿名 access 邊界 `pass`。
 
 ## 安全限制
 

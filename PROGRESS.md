@@ -2,22 +2,22 @@
 
 ## 目前狀態
 
-- C-004（2026-08-09）：無 secret Sheet provisioning 切片完成，等待 owner 首次 OAuth 與真實 setup 驗收。
-- 範圍：setup 自動建立／重用 Sheet、保存 `SPREADSHEET_ID`、建立／驗證兩個 schema，並以 ScriptLock 防止重複建立。
-- 驗證：`npm test` 19/19 通過；`npm run verify` 通過。
+- C-005（2026-08-09）：Sheet provisioning 清理與 Gemini 預設模型更新完成，等待 runtime 整合驗收。
+- 範圍：新建 Sheet 在 schema 成功後只保留 Quotes／Events；既有 Sheet 的額外使用者分頁保留；預設模型改為 `gemini-3.5-flash-lite`。
+- 驗證：`npm test` 20/20 通過；`npm run verify` 通過；OAuth 後 Sheet schema、Webhook anonymous access 與 Review auth boundary 均 pass。
 
 ## 進行中
 
-- Owner 手動執行 setup／OAuth、Webhook HTTP 重測、runtime Properties、LINE 與 Gemini 整合驗收。
+- 剩餘 Webhook／Review runtime Properties、LINE 與 Gemini 整合驗收。
 
 ## 下一步
 
-- Owner 在 Apps Script editor 手動執行 `setupWebhookProject()` 完成首次 OAuth 並取得 Sheet。
-- 重測 Webhook anonymous access；通過後由使用者自行放入 `GEMINI_API_KEY`，再設定 LINE 並執行 P0–P3 驗收。
+- 設定剩餘 LINE token、allowed user、webhook secret、Review URL 等 runtime Properties 與 LINE，再執行 P0–P3 驗收。
+- 若複雜版面辨識不足，以 `GEMINI_MODEL=gemini-3.6-flash` 做受控 override 比較。
 
 ## 備註
 
 - 真實 token、API key、Sheet ID 與部署 URL 不進入 Git。
 - 原圖不持久保存。
-- Review anonymous HTTP auth boundary 已 pass；Webhook GET 403 為 revise，需首次 OAuth 後重測。
-- Gemini key 未接觸；setup、Sheet、runtime Properties 與 LINE 仍未實際完成。
+- Review anonymous HTTP auth boundary 已 pass；Webhook anonymous GET 200 且為預期 missing `doGet`，access boundary 已 pass。
+- 使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties；代理未讀取或驗證內容。setup／Sheet schema 已完成，其餘 runtime Properties、LINE 與 Gemini 真實辨識仍未完成。

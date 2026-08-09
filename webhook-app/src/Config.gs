@@ -31,7 +31,7 @@ function getWebhookConfig_() {
     spreadsheetId: properties.getProperty('SPREADSHEET_ID'),
     allowedUserId: properties.getProperty('ALLOWED_LINE_USER_ID'),
     webhookSecret: properties.getProperty('WEBHOOK_SECRET'),
-    geminiModel: properties.getProperty('GEMINI_MODEL') || 'gemini-3.6-flash',
+    geminiModel: properties.getProperty('GEMINI_MODEL') || 'gemini-3.5-flash-lite',
     reviewAppUrl: properties.getProperty('REVIEW_APP_URL') || ''
   };
 
@@ -49,17 +49,22 @@ function setupWebhookProject() {
     var properties = PropertiesService.getScriptProperties();
     var spreadsheetId = properties.getProperty('SPREADSHEET_ID');
     var spreadsheet;
+    var initialSheet = null;
 
     if (spreadsheetId) {
       spreadsheet = SpreadsheetApp.openById(spreadsheetId);
     } else {
       spreadsheet = SpreadsheetApp.create('LINE 金句收藏庫');
+      initialSheet = spreadsheet.getSheets()[0];
       spreadsheetId = spreadsheet.getId();
       properties.setProperty('SPREADSHEET_ID', spreadsheetId);
     }
 
     ensureSheet_(spreadsheet, 'Quotes', QUOTES_HEADERS);
     ensureSheet_(spreadsheet, 'Events', EVENTS_HEADERS);
+    if (initialSheet && spreadsheet.getSheets().length > 2) {
+      spreadsheet.deleteSheet(initialSheet);
+    }
     return {
       status: 'ready',
       spreadsheetUrl: spreadsheet.getUrl()

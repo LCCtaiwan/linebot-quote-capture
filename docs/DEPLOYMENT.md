@@ -17,7 +17,8 @@
 
 1. 若沒有 `SPREADSHEET_ID`，建立原生 `LINE 金句收藏庫` 並把新 ID 寫入 Script Properties。
 2. 若已有 `SPREADSHEET_ID`，重用該 Sheet，不建立第二份。
-3. 建立或驗證 `Quotes` 與 `Events`；整段流程由 ScriptLock 保護。
+3. 建立或驗證 `Quotes` 與 `Events`；只有本次新建 Sheet 的空白預設分頁會在 schema 成功後刪除，既有 Sheet 的額外使用者分頁不會被刪除。
+4. 整段流程由 ScriptLock 保護。
 
 ## 3. 建立 Webhook Project W
 
@@ -34,7 +35,7 @@
 | `SPREADSHEET_ID` | setup 已自動寫入；只有要改用既有 Sheet 時才預先設定 |
 | `ALLOWED_LINE_USER_ID` | LINE Developers Basic settings 顯示的 Your user ID |
 | `WEBHOOK_SECRET` | 自行產生的高強度 URL-safe 隨機字串 |
-| `GEMINI_MODEL` | 預設 `gemini-3.6-flash`；可依可用模型調整 |
+| `GEMINI_MODEL` | 預設 `gemini-3.5-flash-lite`，適合文件擷取、結構化 JSON 與 minimal thinking；複雜版面品質不足時可覆寫為 `gemini-3.6-flash` |
 | `REVIEW_APP_URL` | Review project 部署完成後再填 |
 
 6. Deploy → New deployment → Web app：
@@ -97,12 +98,13 @@ Webhook 下載 LINE 圖片時使用 `api-data.line.me`；Gemini key 透過 `x-go
 
 ## 7. 目前驗證狀態
 
-- C-004 離線測試：`npm test` 19/19 通過；靜態驗證：`npm run verify` 通過。
-- C-004 setup 不依賴任何 secret；Gemini key 仍由使用者日後親自放入 Script Properties，本階段未接觸。
+- C-005 離線測試：`npm test` 20/20 通過；靜態驗證：`npm run verify` 通過。
+- C-005 setup 不依賴任何 secret；新建 Sheet 只保留 Quotes／Events，既有 Sheet 的額外分頁會保留。使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties，代理未讀取或驗證內容。
 - C-003：兩個 standalone GAS projects 已建立；Webhook 8 檔與 Review 4 檔已推送；兩邊 @1 deployment 已建立成功。
 - Review 未登入 HTTP 302 至 Google login：`pass`。
-- Webhook anonymous GET 403 access denied：`revise`。Owner 必須先在 editor 手動執行 setup 完成新增 scopes 的首次 OAuth，再重測；授權後結果仍需實測，不預先歸因於帳號政策。
-- 尚未執行：setup 真實建立 Sheet、runtime Script Properties、LINE webhook、Gemini 圖像辨識與 Sheet 寫入驗收。
+- Webhook anonymous GET 200 且顯示預期的 missing `doGet`：`pass`。
+- OAuth 後真實 Sheet schema 驗證與空白預設分頁清理：`pass`。
+- 尚未執行：其餘 LINE token、allowed user、webhook secret、Review URL 等 runtime Properties、LINE webhook、Gemini 圖像辨識與 Sheet 寫入驗收。
 
 ## 8. 公開多人使用前
 

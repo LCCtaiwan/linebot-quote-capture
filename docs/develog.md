@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-完成不依賴 runtime secrets 的 Sheet provisioning 切片，讓 owner 可先執行 setup／OAuth，再分階段設定 Gemini 與 LINE。
+完成 C-005 Sheet 清理與 Gemini 預設模型切片，準備 runtime Properties、LINE 與 Gemini 整合驗收。
 
 ## Stack And Run Commands
 
@@ -49,6 +49,9 @@ npm run verify
 - 2026-08-09 C-003：建立兩個獨立 standalone GAS projects，推送 Webhook 8 檔與 Review 4 檔，並各建立 @1 initial web app deployment。
 - 2026-08-09 C-004：setup 可在無任何 property 時建立原生 `LINE 金句收藏庫`、保存 ID 並建立／驗證 Quotes、Events；ScriptLock 防止重複建立。
 - 2026-08-09 C-004：Review anonymous auth 302 Google login 為 pass；Webhook GET 403 為 revise，待 owner 首次 OAuth 後重測；Gemini key 未接觸。
+- 2026-08-09 C-005：Gemini 預設改為 `gemini-3.5-flash-lite`；複雜版面可手動覆寫 `gemini-3.6-flash`。
+- 2026-08-09 C-005：新建 Sheet 的空白預設分頁只在 Quotes／Events schema 成功後清除；既有 Sheet 額外分頁保留。
+- 2026-08-09 C-005：OAuth 後 Sheet schema／空白分頁清理、Webhook anonymous GET 200 expected missing `doGet`、Review auth boundary 均 pass。
 
 ## Accepted / Rejected Outputs
 
@@ -59,16 +62,16 @@ npm run verify
 
 ## Current Checkpoint
 
-- C-004 本地 provisioning 程式與測試完成。
-- Review HTTP auth boundary pass；Webhook access revise。真實 setup、Sheet、runtime Properties、LINE、Gemini 尚未完成。
+- C-005 本地程式與測試完成；真實 Sheet schema 與雙 deployment access boundary pass。
+- 使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties；代理未讀取或驗證內容。其餘 runtime Properties、LINE、Gemini 真實辨識尚未完成。
 
 ## Recommended Next Step
 
-- Owner 先在 editor 手動執行 setup 完成 OAuth，重測 Webhook；之後由使用者自行設定 `GEMINI_API_KEY`，再完成 LINE 與 P0–P3 驗收。
+- 設定剩餘 LINE token、allowed user、webhook secret、Review URL 等 runtime Properties，再完成 LINE 與 P0–P3 驗收。
 
 ## Verification Status
 
-- `npm test`：19/19 通過，包含無 secret Sheet create／reuse／lock 契約。
+- `npm test`：20/20 通過，包含新建空白分頁清理、既有使用者分頁保留與原有 schema／lock 契約。
 - `npm run verify`：通過。
-- C-004 provisioning、HTTP checkpoint 與驗證狀態已同步。
-- 真實服務驗收：未執行。
+- C-005 模型、Sheet 與 HTTP checkpoint 已同步。
+- 真實服務驗收：Sheet／HTTP boundary pass；LINE／Gemini runtime 未執行。

@@ -11,7 +11,7 @@
 
 Deployment manifest 亦鎖定兩個邊界：Webhook 為 `ANYONE_ANONYMOUS`／`USER_DEPLOYING`；Review 為 `MYSELF`／`USER_DEPLOYING`。Webhook 的 `urlFetchWhitelist` 只包含 LINE Messaging API、LINE Data API 與 Gemini API 三個 HTTPS prefix；Review 不需要外部 fetch allowlist。
 
-`setupWebhookProject()` 是不依賴 runtime secrets 的 provisioning path。它以 ScriptLock 包住 Sheet create／reuse、`SPREADSHEET_ID` 寫入與 `Quotes`／`Events` schema setup；因此 owner 可先在 editor 執行 setup 完成首次 OAuth，再由使用者日後親自加入 Gemini key 與 LINE 設定。
+`setupWebhookProject()` 是不依賴 runtime secrets 的 provisioning path。它以 ScriptLock 包住 Sheet create／reuse、`SPREADSHEET_ID` 寫入與 `Quotes`／`Events` schema setup；若 Sheet 是本次新建，schema 成功後才刪除該次 create 產生的空白預設分頁。既有 `SPREADSHEET_ID` 路徑絕不刪除額外使用者分頁。因此 owner 可先在 editor 執行 setup 完成首次 OAuth，再由使用者日後親自加入 Gemini key 與 LINE 設定。
 
 ## 2. Webhook Data Flow
 
@@ -88,7 +88,7 @@ Gemini 必須回傳單一 JSON object：
 
 解析器會拒絕空金句、非法分類、少於 2 或多於 5 個標籤，以及非法 enum。
 
-為確保 LINE 預覽能送出，金句上限為 3,000 字、來源欄位上限為 200 字、單一標籤上限為 40 字，標籤不得含逗號。Gemini 3.6 不傳送已 deprecated 的 sampling 參數；API key 僅由使用者自行存入 Webhook Script Properties。
+為確保 LINE 預覽能送出，金句上限為 3,000 字、來源欄位上限為 200 字、單一標籤上限為 40 字，標籤不得含逗號。預設 `gemini-3.5-flash-lite`，用於文件擷取、結構化 JSON 與 minimal thinking；複雜版面品質不足時可由使用者以 `GEMINI_MODEL=gemini-3.6-flash` 覆寫。請求不傳送已 deprecated 的 sampling 參數；API key 僅由使用者自行存入 Webhook Script Properties。
 
 ## 7. Security
 

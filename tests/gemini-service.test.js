@@ -18,7 +18,7 @@ function validResponse() {
   };
 }
 
-test('uses the current Gemini 3.6 structured-output REST wire shape', () => {
+test('uses the current Gemini structured-output REST wire shape with a model override', () => {
   let capturedUrl;
   let capturedOptions;
   const context = {
