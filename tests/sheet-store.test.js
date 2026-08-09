@@ -43,8 +43,17 @@ class FakeSheet {
 }
 
 class FakeSpreadsheet {
-  constructor() {
+  constructor(id) {
+    this.id = id;
     this.sheets = {};
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  getUrl() {
+    return `https://docs.google.com/spreadsheets/d/${this.id}/edit`;
   }
 
   getSheetByName(name) {
@@ -57,17 +66,25 @@ class FakeSpreadsheet {
   }
 }
 
-function createContext() {
-  const properties = new Map([
+function createContext({ spreadsheetId = 'test-sheet' } = {}) {
+  const propertyEntries = [
     ['LINE_CHANNEL_ACCESS_TOKEN', 'test-line-token'],
     ['GEMINI_API_KEY', 'test-gemini-key'],
-    ['SPREADSHEET_ID', 'test-sheet'],
     ['ALLOWED_LINE_USER_ID', 'test-user'],
     ['WEBHOOK_SECRET', 'test-secret'],
     ['GEMINI_MODEL', 'gemini-test']
-  ]);
-  const spreadsheet = new FakeSpreadsheet();
-  const lock = { waitLock() {}, releaseLock() {} };
+  ];
+  if (spreadsheetId) propertyEntries.push(['SPREADSHEET_ID', spreadsheetId]);
+  const properties = new Map(propertyEntries);
+  const spreadsheets = new Map();
+  if (spreadsheetId) spreadsheets.set(spreadsheetId, new FakeSpreadsheet(spreadsheetId));
+  let createCount = 0;
+  const createdTitles = [];
+  const lockState = { waits: 0, releases: 0 };
+  const lock = {
+    waitLock() { lockState.waits += 1; },
+    releaseLock() { lockState.releases += 1; }
+  };
   const context = {
     console,
     PropertiesService: {
@@ -79,7 +96,18 @@ function createContext() {
     },
     LockService: { getScriptLock: () => lock },
     SpreadsheetApp: {
-      openById: () => spreadsheet,
+      openById: (id) => {
+        if (!spreadsheets.has(id)) throw new Error(`Unknown spreadsheet: ${id}`);
+        return spreadsheets.get(id);
+      },
+      create: (title) => {
+        createCount += 1;
+        createdTitles.push(title);
+        const id = `created-sheet-${createCount}`;
+        const spreadsheet = new FakeSpreadsheet(id);
+        spreadsheets.set(id, spreadsheet);
+        return spreadsheet;
+      },
       flush() {}
     },
     Utilities: {
@@ -91,8 +119,17 @@ function createContext() {
     const source = fs.readFileSync(path.join(root, 'webhook-app/src', file), 'utf8');
     vm.runInContext(source, context, { filename: file });
   }
-  context.setupWebhookProject();
-  return { context, spreadsheet };
+  const setupResult = context.setupWebhookProject();
+  const activeId = properties.get('SPREADSHEET_ID');
+  return {
+    context,
+    spreadsheet: spreadsheets.get(activeId),
+    properties,
+    setupResult,
+    getCreateCount: () => createCount,
+    createdTitles,
+    lockState
+  };
 }
 
 function pending(candidateId, createdAt = Date.now()) {
@@ -137,7 +174,32 @@ test('an expired candidate is cleared without writing a quote', () => {
 });
 
 test('setup rejects an existing Quotes sheet with the wrong schema', () => {
-  const { context, spreadsheet } = createContext();
+  const { context, spreadsheet, lockState } = createContext();
   spreadsheet.sheets.Quotes.rows[0][1] = 'wrong_candidate_header';
   assert.throws(() => context.setupWebhookProject(), /schema/);
+  assert.equal(lockState.releases, 2);
+});
+
+test('setup creates a spreadsheet and stores its id when the property is missing', () => {
+  const { properties, setupResult, getCreateCount, createdTitles, lockState } =
+    createContext({ spreadsheetId: null });
+  assert.equal(getCreateCount(), 1);
+  assert.deepEqual(createdTitles, ['LINE 金句收藏庫']);
+  assert.equal(properties.get('SPREADSHEET_ID'), 'created-sheet-1');
+  assert.equal(setupResult.status, 'ready');
+  assert.match(setupResult.spreadsheetUrl, /created-sheet-1/);
+  assert.equal(lockState.waits, 1);
+  assert.equal(lockState.releases, 1);
+});
+
+test('setup reuses an existing spreadsheet without creating another', () => {
+  const { setupResult, getCreateCount } = createContext();
+  assert.equal(getCreateCount(), 0);
+  assert.match(setupResult.spreadsheetUrl, /test-sheet/);
+});
+
+test('running setup twice creates at most one spreadsheet', () => {
+  const { context, getCreateCount } = createContext({ spreadsheetId: null });
+  context.setupWebhookProject();
+  assert.equal(getCreateCount(), 1);
 });

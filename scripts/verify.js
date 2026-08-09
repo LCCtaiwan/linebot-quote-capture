@@ -30,6 +30,29 @@ const webhookSources = fs.readdirSync(webhookDir)
   .filter((file) => file.endsWith('.gs'))
   .map((file) => fs.readFileSync(path.join(webhookDir, file), 'utf8'))
   .join('\n');
+const webhookConfigSource = fs.readFileSync(path.join(webhookDir, 'Config.gs'), 'utf8');
+
+function extractFunction(source, name) {
+  const start = source.indexOf(`function ${name}(`);
+  assert.notEqual(start, -1, `Missing function: ${name}`);
+  const open = source.indexOf('{', start);
+  let depth = 0;
+  for (let index = open; index < source.length; index += 1) {
+    if (source[index] === '{') depth += 1;
+    if (source[index] === '}') depth -= 1;
+    if (depth === 0) return source.slice(start, index + 1);
+  }
+  throw new Error(`Unclosed function: ${name}`);
+}
+
+const setupWebhookSource = extractFunction(webhookConfigSource, 'setupWebhookProject');
+assert.doesNotMatch(setupWebhookSource, /getWebhookConfig_\s*\(/);
+assert.match(setupWebhookSource, /LockService\.getScriptLock\s*\(/);
+assert.match(setupWebhookSource, /lock\.waitLock\s*\(STATE_LOCK_WAIT_MS\)/);
+assert.match(setupWebhookSource, /SpreadsheetApp\.create\s*\(/);
+assert.match(setupWebhookSource, /setProperty\s*\(\s*['"]SPREADSHEET_ID['"]/);
+assert.match(setupWebhookSource, /finally\s*\{/);
+assert.match(setupWebhookSource, /lock\.releaseLock\s*\(/);
 const reviewSources = fs.readdirSync(reviewDir)
   .filter((file) => file.endsWith('.gs'))
   .map((file) => fs.readFileSync(path.join(reviewDir, file), 'utf8'))

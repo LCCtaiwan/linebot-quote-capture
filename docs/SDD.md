@@ -11,6 +11,8 @@
 
 Deployment manifest 亦鎖定兩個邊界：Webhook 為 `ANYONE_ANONYMOUS`／`USER_DEPLOYING`；Review 為 `MYSELF`／`USER_DEPLOYING`。Webhook 的 `urlFetchWhitelist` 只包含 LINE Messaging API、LINE Data API 與 Gemini API 三個 HTTPS prefix；Review 不需要外部 fetch allowlist。
 
+`setupWebhookProject()` 是不依賴 runtime secrets 的 provisioning path。它以 ScriptLock 包住 Sheet create／reuse、`SPREADSHEET_ID` 寫入與 `Quotes`／`Events` schema setup；因此 owner 可先在 editor 執行 setup 完成首次 OAuth，再由使用者日後親自加入 Gemini key 與 LINE 設定。
+
 ## 2. Webhook Data Flow
 
 1. 以 query secret、LINE user ID allowlist 與 webhook event ID 檢查事件。
@@ -96,6 +98,7 @@ Gemini 必須回傳單一 JSON object：
 - Review HTML 無 CDN、外部字型、圖床或外部連結。
 - 圖片不保存，但仍會送往 Gemini API；不得處理敏感資料。
 - Manifest 是 deployment 安全設定的 source of truth；實際部署後仍須核對 Apps Script deployment UI 與 manifest 一致。
+- HTTP checkpoint：Review 未登入會 302 至 Google login，為 `pass`；Webhook anonymous GET 403 暫為 `revise`，需 owner 首次 OAuth 後重測，不以目前結果推論帳號政策或保證授權後必然修復。
 
 ## 8. Failure Handling
 

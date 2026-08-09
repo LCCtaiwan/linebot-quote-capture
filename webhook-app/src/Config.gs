@@ -43,9 +43,28 @@ function getWebhookConfig_() {
 }
 
 function setupWebhookProject() {
-  var config = getWebhookConfig_();
-  var spreadsheet = SpreadsheetApp.openById(config.spreadsheetId);
-  ensureSheet_(spreadsheet, 'Quotes', QUOTES_HEADERS);
-  ensureSheet_(spreadsheet, 'Events', EVENTS_HEADERS);
-  return 'Webhook project ready';
+  var lock = LockService.getScriptLock();
+  lock.waitLock(STATE_LOCK_WAIT_MS);
+  try {
+    var properties = PropertiesService.getScriptProperties();
+    var spreadsheetId = properties.getProperty('SPREADSHEET_ID');
+    var spreadsheet;
+
+    if (spreadsheetId) {
+      spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+    } else {
+      spreadsheet = SpreadsheetApp.create('LINE 金句收藏庫');
+      spreadsheetId = spreadsheet.getId();
+      properties.setProperty('SPREADSHEET_ID', spreadsheetId);
+    }
+
+    ensureSheet_(spreadsheet, 'Quotes', QUOTES_HEADERS);
+    ensureSheet_(spreadsheet, 'Events', EVENTS_HEADERS);
+    return {
+      status: 'ready',
+      spreadsheetUrl: spreadsheet.getUrl()
+    };
+  } finally {
+    lock.releaseLock();
+  }
 }

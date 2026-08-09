@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### C-004 — 2026-08-09
+
+- `setupWebhookProject()` 不再依賴 LINE／Gemini runtime secrets；缺少 `SPREADSHEET_ID` 時建立原生 `LINE 金句收藏庫` 並保存 ID，既有 ID 則重用。
+- ScriptLock 保護 Sheet create／reuse 與 `Quotes`／`Events` schema setup，重複執行不建立第二份。
+- 驗證：`npm test` 19/19 通過，`npm run verify` 通過；Gemini key 仍由使用者日後親自設定，本階段未接觸。
+- HTTP：Review 未登入 302 至 Google login 為 pass；Webhook anonymous GET 403 為 revise，待 owner 首次 OAuth 後重測。
+
 ### C-003 — 2026-08-09
 
 - 建立兩個獨立 standalone GAS projects，分別推送 Webhook 8 檔與 Review 4 檔。

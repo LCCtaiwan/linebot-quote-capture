@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-完成 LINE 金句收藏 MVP 的雙 GAS project 建立、source push 與初始 deployment checkpoint，準備進入 runtime 設定與真實 access 驗收。
+完成不依賴 runtime secrets 的 Sheet provisioning 切片，讓 owner 可先執行 setup／OAuth，再分階段設定 Gemini 與 LINE。
 
 ## Stack And Run Commands
 
@@ -47,6 +47,8 @@ npm run verify
 - 2026-08-09 C-002：依官方 manifest schema 加入 Webhook `ANYONE_ANONYMOUS`、Review `MYSELF` 與共同 `USER_DEPLOYING` 設定。
 - 2026-08-09 C-002：Webhook outbound URL allowlist 限於 LINE API、LINE Data API 與 Gemini API；新增 manifest 契約測試與 verify assertions。
 - 2026-08-09 C-003：建立兩個獨立 standalone GAS projects，推送 Webhook 8 檔與 Review 4 檔，並各建立 @1 initial web app deployment。
+- 2026-08-09 C-004：setup 可在無任何 property 時建立原生 `LINE 金句收藏庫`、保存 ID 並建立／驗證 Quotes、Events；ScriptLock 防止重複建立。
+- 2026-08-09 C-004：Review anonymous auth 302 Google login 為 pass；Webhook GET 403 為 revise，待 owner 首次 OAuth 後重測；Gemini key 未接觸。
 
 ## Accepted / Rejected Outputs
 
@@ -57,16 +59,16 @@ npm run verify
 
 ## Current Checkpoint
 
-- C-003 雙 GAS project、source push 與 @1 deployment 完成。
-- 真實 HTTP access、Google Sheet、setup、Script Properties、LINE、Gemini 與 Review 權限整合尚未執行。
+- C-004 本地 provisioning 程式與測試完成。
+- Review HTTP auth boundary pass；Webhook access revise。真實 setup、Sheet、runtime Properties、LINE、Gemini 尚未完成。
 
 ## Recommended Next Step
 
-- 由使用者自行設定 `GEMINI_API_KEY`，再依 `docs/DEPLOYMENT.md` 建立外部資源並執行 P0–P3 人工驗收。
+- Owner 先在 editor 手動執行 setup 完成 OAuth，重測 Webhook；之後由使用者自行設定 `GEMINI_API_KEY`，再完成 LINE 與 P0–P3 驗收。
 
 ## Verification Status
 
-- `npm test`：16/16 通過，包含 Gemini REST payload 與雙 manifest deployment 契約測試。
+- `npm test`：19/19 通過，包含無 secret Sheet create／reuse／lock 契約。
 - `npm run verify`：通過。
-- 文件已同步 C-001 的實作、風險修正與驗證狀態。
+- C-004 provisioning、HTTP checkpoint 與驗證狀態已同步。
 - 真實服務驗收：未執行。

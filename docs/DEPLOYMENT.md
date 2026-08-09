@@ -6,35 +6,37 @@
 
 - 一個 LINE Official Account 與 Messaging API channel。
 - 一個 Gemini API key。
-- 一份空白 Google Sheet。
+- 一份由 setup 自動建立或重用的 Google Sheet。
 - 兩個獨立的 Apps Script project。
 
 請勿把任何 key、token、Sheet ID 或 deployment URL 寫入本專案檔案。
 
 ## 2. 建立共用 Google Sheet
 
-1. 建立空白試算表。
-2. 從網址複製 spreadsheet ID。
-3. 工作表可保持空白；Webhook 專案的 `setupWebhookProject()` 會建立 `Quotes` 與 `Events`。
+不需先手動建立試算表。首次執行 Webhook 專案的 `setupWebhookProject()` 時：
+
+1. 若沒有 `SPREADSHEET_ID`，建立原生 `LINE 金句收藏庫` 並把新 ID 寫入 Script Properties。
+2. 若已有 `SPREADSHEET_ID`，重用該 Sheet，不建立第二份。
+3. 建立或驗證 `Quotes` 與 `Events`；整段流程由 ScriptLock 保護。
 
 ## 3. 建立 Webhook Project W
 
 1. 新增 standalone Apps Script project。
 2. 將 `webhook-app/src` 內所有 `.gs` 與 `appsscript.json` 上傳。
-3. 在 Project Settings → Script Properties 新增：
+3. 在 Apps Script editor 手動執行 `setupWebhookProject()`，完成 owner 首次 OAuth。這一步不需要 LINE token、Gemini key、user ID 或 webhook secret；回傳 ready 狀態與 Sheet URL。
+4. 確認 Sheet 已出現 `Quotes` 與 `Events`，且標題列正確。
+5. 在 Project Settings → Script Properties 補上 runtime 設定：
 
 | Property | 內容 |
 | --- | --- |
 | `LINE_CHANNEL_ACCESS_TOKEN` | LINE Messaging API channel access token |
 | `GEMINI_API_KEY` | 由使用者自行建立並直接貼入此 Script Property；不要傳給代理、寫入檔案或 Sheet |
-| `SPREADSHEET_ID` | 共用試算表 ID |
+| `SPREADSHEET_ID` | setup 已自動寫入；只有要改用既有 Sheet 時才預先設定 |
 | `ALLOWED_LINE_USER_ID` | LINE Developers Basic settings 顯示的 Your user ID |
 | `WEBHOOK_SECRET` | 自行產生的高強度 URL-safe 隨機字串 |
 | `GEMINI_MODEL` | 預設 `gemini-3.6-flash`；可依可用模型調整 |
 | `REVIEW_APP_URL` | Review project 部署完成後再填 |
 
-4. 在 Apps Script 編輯器執行 `setupWebhookProject()` 並完成 Google 授權。
-5. 確認 Sheet 已出現 `Quotes` 與 `Events`，且標題列正確。
 6. Deploy → New deployment → Web app：
    - Execute as：Me。
    - Who has access：Anyone。
@@ -95,10 +97,12 @@ Webhook 下載 LINE 圖片時使用 `api-data.line.me`；Gemini key 透過 `x-go
 
 ## 7. 目前驗證狀態
 
-- C-002 離線測試：`npm test` 16/16 通過，包含 Gemini REST payload 與雙 manifest 部署契約測試。
-- C-002 靜態驗證：`npm run verify` 通過。
+- C-004 離線測試：`npm test` 19/19 通過；靜態驗證：`npm run verify` 通過。
+- C-004 setup 不依賴任何 secret；Gemini key 仍由使用者日後親自放入 Script Properties，本階段未接觸。
 - C-003：兩個 standalone GAS projects 已建立；Webhook 8 檔與 Review 4 檔已推送；兩邊 @1 deployment 已建立成功。
-- 尚未執行：deployment HTTP access、Google Sheet、setup functions、Script Properties、LINE webhook、Gemini 圖像辨識、Sheet 寫入與 Review 帳號權限驗收。
+- Review 未登入 HTTP 302 至 Google login：`pass`。
+- Webhook anonymous GET 403 access denied：`revise`。Owner 必須先在 editor 手動執行 setup 完成新增 scopes 的首次 OAuth，再重測；授權後結果仍需實測，不預先歸因於帳號政策。
+- 尚未執行：setup 真實建立 Sheet、runtime Script Properties、LINE webhook、Gemini 圖像辨識與 Sheet 寫入驗收。
 
 ## 8. 公開多人使用前
 
