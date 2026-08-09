@@ -61,6 +61,7 @@ npm run verify
 - 2026-08-09 C-010：課程 validator 12/12 pass、無外部資源與缺失 DOM 參照；桌面導覽、勾選、講義模式、Enter 鍵操作 pass；CSS 760px breakpoint 已檢查，瀏覽器控制介面未提供 viewport 設定。
 - 2026-08-09 C-011：使用者回報右側淺色資訊卡「有字但是空白」；確認原因是卡片沿用 body 的白字，加入深色文字覆寫，瀏覽器計算色彩與截圖驗收 pass。
 - 2026-08-09 C-012：使用者回報不理解為何需要兩個 GAS project；將第 02 頁改成收件門／私人書櫃比喻，補上匿名 webhook 與私人 Review 的 manifest 風險對照。
+- 2026-08-10 C-013：使用者希望 Review HTML 更有質感；將 Review 改為暖白紙張／深墨綠閱讀書房風格，加入收藏統計、來源層級、金句卡片與響應式工具列；補上 UTF-8／viewport，瀏覽器中文與桌面溢出檢查 pass。
 
 ## Accepted / Rejected Outputs
 

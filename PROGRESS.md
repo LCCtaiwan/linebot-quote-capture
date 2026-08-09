@@ -7,6 +7,7 @@
 - 教學：已建立 `docs/tutorial/content.md`、`style-directions.md`、`build.mjs` 與單檔 `quote-capture-guide.html`，沿用既有 LINE Bot 教材的「任務工作台」方向；課程 validator 與桌面互動驗收 pass。
 - C-011：已修正淺色資訊卡白字造成的空白感，重新建置 HTML 並確認文字色可讀。
 - C-012：已重寫第 02 頁，用「收件門／私人書櫃」與合併風險解釋雙 project 必要性。
+- C-013：Review 頁已改為私人閱讀書房視覺，並補上 UTF-8／viewport 宣告；桌面版面與中文顯示驗收 pass。
 - 驗證：`npm test` 22/22、`npm run verify` pass；Webhook／Review／Sheet schema 與 LINE 開關已完成，Gemini 修正後的成功圖片流程待再次確認。
 
 ## 進行中
