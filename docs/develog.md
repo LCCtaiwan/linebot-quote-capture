@@ -62,6 +62,7 @@ npm run verify
 - 2026-08-09 C-011：使用者回報右側淺色資訊卡「有字但是空白」；確認原因是卡片沿用 body 的白字，加入深色文字覆寫，瀏覽器計算色彩與截圖驗收 pass。
 - 2026-08-09 C-012：使用者回報不理解為何需要兩個 GAS project；將第 02 頁改成收件門／私人書櫃比喻，補上匿名 webhook 與私人 Review 的 manifest 風險對照。
 - 2026-08-10 C-013：使用者希望 Review HTML 更有質感；將 Review 改為暖白紙張／深墨綠閱讀書房風格，加入收藏統計、來源層級、金句卡片與響應式工具列；補上 UTF-8／viewport，瀏覽器中文與桌面溢出檢查 pass。
+- 2026-08-10 C-013：以 `clasp push` 推送 Review 4 個檔案，更新既有線上 deployment 至版本 2；匿名請求導向 Google login，符合 `MYSELF` access boundary；目前未登入工作階段未做登入後資料頁驗收。
 
 ## Accepted / Rejected Outputs
 
@@ -73,6 +74,7 @@ npm run verify
 ## Current Checkpoint
 
 - C-009 程式修正與離線驗證 pass；LINE Webhook 開關、預設自動回應、Properties、Sheet schema 與 Review access boundary 已完成。
+- C-013 Review UI 已部署至線上版本 2；匿名 access boundary pass，登入後視覺與收藏內容需使用者在已登入工作階段確認。
 - 仍待：重新圖片測試確認 `APPLICATION_JSON` 修正成功；確認後再按下 LINE postback，驗收 `Quotes`／`Events` 與 Review。
 - GitHub blockers：沒有 `origin`，`gh auth status` 顯示既有 token 無效；不會在未重新登入與未確認 license 前推送。
 

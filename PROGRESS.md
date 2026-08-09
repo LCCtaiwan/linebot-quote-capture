@@ -8,6 +8,7 @@
 - C-011：已修正淺色資訊卡白字造成的空白感，重新建置 HTML 並確認文字色可讀。
 - C-012：已重寫第 02 頁，用「收件門／私人書櫃」與合併風險解釋雙 project 必要性。
 - C-013：Review 頁已改為私人閱讀書房視覺，並補上 UTF-8／viewport 宣告；桌面版面與中文顯示驗收 pass。
+- Review 線上 deployment 已更新至 C-013 版本 2；匿名開啟導向 Google 登入 pass，登入後內容尚待使用者工作階段確認。
 - 驗證：`npm test` 22/22、`npm run verify` pass；Webhook／Review／Sheet schema 與 LINE 開關已完成，Gemini 修正後的成功圖片流程待再次確認。
 
 ## 進行中
