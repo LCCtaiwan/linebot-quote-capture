@@ -41,7 +41,7 @@ function callGemini_(parts) {
       generationConfig: {
         responseFormat: {
           text: {
-            mimeType: 'application/json',
+            mimeType: 'APPLICATION_JSON',
             schema: geminiResponseSchema_()
           }
         },
@@ -52,7 +52,14 @@ function callGemini_(parts) {
   });
 
   if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
-    throw new Error('Gemini API 失敗：' + response.getResponseCode());
+    var errorText = String(response.getContentText() || '').trim();
+    if (config.geminiKey && errorText.indexOf(config.geminiKey) !== -1) {
+      errorText = errorText.split(config.geminiKey).join('[redacted]');
+    }
+    throw new Error(
+      'Gemini API 失敗：' + response.getResponseCode() +
+      (errorText ? '：' + errorText.slice(0, 500) : '')
+    );
   }
   var payload = JSON.parse(response.getContentText());
   var text = payload.candidates && payload.candidates[0] &&

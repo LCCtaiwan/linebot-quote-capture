@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### C-009 — 2026-08-09
+
+- 依真實 Events 錯誤修正 Gemini 3.x structured output 的 `mimeType`，由 `application/json` 改為 API enum `APPLICATION_JSON`。
+- 增加 Gemini HTTP 錯誤摘要，限制長度並遮罩 API key，方便從 `Events.note` 診斷而不暴露 credential。
+- Webhook 已推送並更新至最新 deployment；`npm test` 22/22、`npm run verify` 通過。
+
+### C-010 — 2026-08-09
+
+- 建立 `docs/tutorial/` 教學內容計畫與風格決策，沿用既有 LINE Bot 教材的「任務工作台」方向。
+- 教學涵蓋雙 GAS project、Sheet schema、Script Properties、LINE Webhook 開關、Gemini 預覽、確認寫入、Review 與開源安全檢查。
+- 新增 `build.mjs`、單檔離線 `quote-capture-guide.html` 與 MIT `LICENSE`；內嵌 4 張不含機密的 LINE 操作截圖。
+- 課程 validator 12/12 pass，無外部資源／缺失 DOM 參照；桌面導覽、勾選、講義模式與 Enter 操作 pass。GitHub 尚未推送。
+
 ### C-006 — 2026-08-09
 
 - 使用者完成 Review OAuth 並在正確的 Review Apps Script project 儲存 `SPREADSHEET_ID`。

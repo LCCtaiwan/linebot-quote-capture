@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-完成 C-006 Review OAuth、Property 與真實 Sheet 讀取驗收，準備 LINE 與 Gemini runtime 整合。
+完成 C-009 Gemini 400 修正後的圖片端到端驗收，並製作可公開的金句收藏助手 HTML 教學與 GitHub 發佈準備。
 
 ## Stack And Run Commands
 
@@ -53,6 +53,12 @@ npm run verify
 - 2026-08-09 C-005：新建 Sheet 的空白預設分頁只在 Quotes／Events schema 成功後清除；既有 Sheet 額外分頁保留。
 - 2026-08-09 C-005：OAuth 後 Sheet schema／空白分頁清理、Webhook anonymous GET 200 expected missing `doGet`、Review auth boundary 均 pass。
 - 2026-08-09 C-006：Review OAuth 與 `SPREADSHEET_ID` 設定完成；真實 deployment 成功讀取 Sheet，顯示「共 0 則收藏」。
+- 2026-08-09 C-007：LINE Manager 原本 Webhook 關閉且自動回應開啟；已切換為 Webhook 開啟、預設自動回應停用，並確認自動回應頁顯示停用中。
+- 2026-08-09 C-008：真實圖片事件寫入 `Events`，確認 Gemini 回傳 HTTP 400；加入限長且遮罩 key 的錯誤摘要，部署最新版本以取得可診斷訊息。
+- 2026-08-09 C-009：依 `Events.note` 修正 Gemini 3.x `mimeType` 為 `APPLICATION_JSON`；`npm test` 22/22、`npm run verify` 通過，Webhook 已更新至最新 deployment。
+- 2026-08-09 C-010：找到並研究既有 `clinical-automation-course` LINE Bot 教材，建立本專案 `docs/tutorial/content.md`、`style-directions.md` 與 README；沿用 C｜任務工作台。
+- 2026-08-09 C-010：新增 `docs/tutorial/build.mjs` 與單檔 `quote-capture-guide.html`，內嵌 4 張不含機密的操作截圖；新增 MIT `LICENSE`。
+- 2026-08-09 C-010：課程 validator 12/12 pass、無外部資源與缺失 DOM 參照；桌面導覽、勾選、講義模式、Enter 鍵操作 pass；CSS 760px breakpoint 已檢查，瀏覽器控制介面未提供 viewport 設定。
 
 ## Accepted / Rejected Outputs
 
@@ -63,17 +69,21 @@ npm run verify
 
 ## Current Checkpoint
 
-- C-005 本地程式與測試完成；真實 Sheet schema、雙 deployment access boundary 與 Review 登入後讀取均 pass。
-- 使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties；代理未讀取或驗證內容。剩餘 Webhook runtime Properties、LINE、Gemini 真實辨識尚未完成。
+- C-009 程式修正與離線驗證 pass；LINE Webhook 開關、預設自動回應、Properties、Sheet schema 與 Review access boundary 已完成。
+- 仍待：重新圖片測試確認 `APPLICATION_JSON` 修正成功；確認後再按下 LINE postback，驗收 `Quotes`／`Events` 與 Review。
+- GitHub blockers：沒有 `origin`，`gh auth status` 顯示既有 token 無效；不會在未重新登入與未確認 license 前推送。
 
 ## Recommended Next Step
 
-- 設定剩餘 LINE token、allowed user、webhook secret、Review URL 等 runtime Properties，再完成 LINE 與 P0–P3 驗收。
+1. 請使用者重新傳送同一張測試圖片，讀取新 `Events.note` 或預覽結果。
+2. 預覽成功後按「確認儲存」，讀取 `Quotes`／`Events` 並驗收 Review。
+3. 使用者重新登入 GitHub，確認 `LICENSE` 的 MIT 版權持有人文字與公開範圍後建立 remote 並推送。
+4. 推送後把 GitHub URL 回填到教學與 README（不回填任何 deployment URL 或 secret）。
 
 ## Verification Status
 
-- `npm test`：20/20 通過，包含新建空白分頁清理、既有使用者分頁保留與原有 schema／lock 契約。
+- `npm test`：22/22 通過，包含 Gemini error diagnostic、`APPLICATION_JSON` wire shape、新建空白分頁清理、既有使用者分頁保留與原有 schema／lock 契約。
 - `npm run verify`：通過。
 - C-005 模型、Sheet 與 HTTP checkpoint 已同步。
 - C-006 Review 真實部署頁：OAuth、`SPREADSHEET_ID` 與 Sheet 讀取 pass；空資料狀態顯示「共 0 則收藏」。
-- 真實服務驗收：Sheet／HTTP boundary／Review runtime pass；LINE／Gemini runtime 未執行。
+- 真實服務驗收：Sheet／HTTP boundary／Review runtime pass；LINE Webhook 已實際收到圖片；第一次 Gemini 呼叫因 `mimeType=application/json` 400，C-009 已修正，第二次成功結果尚待確認。

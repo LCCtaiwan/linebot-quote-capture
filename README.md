@@ -16,6 +16,7 @@
 - `review-app/`：僅本人可開啟的回顧頁；不含 `doPost`。
 - `docs/SDD.md`：系統與資料設計。
 - `docs/DEPLOYMENT.md`：雙 GAS 專案設定、部署與人工驗收。
+- `docs/tutorial/`：金句收藏助手的可編輯教學內容與離線 HTML 成品。
 - `docs/develog.md`：開發決策與驗證紀錄。
 - `tests/`：可在本機執行的純邏輯測試。
 
@@ -26,9 +27,13 @@
 ```bash
 npm test
 npm run verify
+node docs/tutorial/build.mjs
+node /Users/lcc/.codex/skills/build-interactive-html-course/scripts/validate_course.mjs \
+  --html docs/tutorial/quote-capture-guide.html \
+  --content docs/tutorial/content.md
 ```
 
-C-005 的離線結果為 `npm test` 20/20 通過、`npm run verify` 通過。`setupWebhookProject()` 可在沒有任何 secret 或既有 Script Property 時建立原生 `LINE 金句收藏庫`、保存 `SPREADSHEET_ID` 並建立／驗證 `Quotes`、`Events`；只有本次新建的 Sheet 會清除其空白預設分頁，既有 Sheet 的使用者分頁一律保留。
+C-009 的離線結果為 `npm test` 22/22 通過、`npm run verify` 通過。`setupWebhookProject()` 可在沒有任何 secret 或既有 Script Property 時建立原生 `LINE 金句收藏庫`、保存 `SPREADSHEET_ID` 並建立／驗證 `Quotes`、`Events`；只有本次新建的 Sheet 會清除其空白預設分頁，既有 Sheet 的使用者分頁一律保留。
 
 ## 部署摘要
 
@@ -41,6 +46,8 @@ C-005 的離線結果為 `npm test` 20/20 通過、`npm run verify` 通過。`se
 7. LINE Developers webhook URL 使用：`WEBHOOK_DEPLOYMENT_URL?key=WEBHOOK_SECRET`。
 
 完整設定與驗收步驟見 `docs/DEPLOYMENT.md`。OAuth 後 Sheet schema 與空白預設分頁清理均通過；Review 未登入請求 302 導向 Google login，權限邊界 `pass`；Webhook anonymous GET 回 200 且顯示預期的 missing `doGet`，匿名 access 邊界 `pass`。
+
+教學成品是 `docs/tutorial/quote-capture-guide.html`，可直接離線開啟；公開授權見 `LICENSE`。
 
 ## 安全限制
 

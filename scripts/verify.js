@@ -67,9 +67,11 @@ assert.doesNotMatch(reviewSources, /function\s+doPost\s*\(/, 'Review project mus
 assert.doesNotMatch(webhookSources, /CacheService/, 'Pending state must not use CacheService');
 assert.doesNotMatch(webhookSources, /DriveApp/, 'Original images must not be persisted to Drive');
 assert.match(webhookSources, /https:\/\/api-data\.line\.me\/v2\/bot/, 'LINE content downloads must use api-data.line.me');
+assert.match(webhookSources, /HtmlService\.createHtmlOutput\(['"]OK['"]\)/, 'Webhook must return HtmlService output to avoid ContentService redirects');
+assert.doesNotMatch(webhookSources, /ContentService\.createTextOutput/, 'Webhook must not return ContentService output to LINE');
 assert.doesNotMatch(webhookSources, /\btemperature\s*:/, 'Gemini request must not receive deprecated sampling parameters');
 assert.match(webhookSources, /responseFormat\s*:\s*\{/, 'Gemini structured output must use responseFormat');
-assert.match(webhookSources, /mimeType\s*:\s*['"]application\/json['"]/, 'Gemini responseFormat must request JSON');
+assert.match(webhookSources, /mimeType\s*:\s*['"]APPLICATION_JSON['"]/, 'Gemini responseFormat must request JSON');
 assert.match(webhookSources, /schema\s*:\s*geminiResponseSchema_\(\)/, 'Gemini responseFormat must include the JSON Schema');
 assert.doesNotMatch(webhookSources, /responseJsonSchema\s*:/, 'Legacy responseJsonSchema wire shape must not be used');
 

@@ -2,14 +2,18 @@ function doPost(e) {
   var config = getWebhookConfig_();
   var providedSecret = e && e.parameter && e.parameter.key;
   if (!providedSecret || providedSecret !== config.webhookSecret) {
-    return ContentService.createTextOutput('OK');
+    return webhookOk_();
   }
 
   var body = JSON.parse(e.postData && e.postData.contents || '{}');
   (body.events || []).forEach(function (event) {
     handleWebhookEvent_(event, config);
   });
-  return ContentService.createTextOutput('OK');
+  return webhookOk_();
+}
+
+function webhookOk_() {
+  return HtmlService.createHtmlOutput('OK');
 }
 
 function handleWebhookEvent_(event, config) {

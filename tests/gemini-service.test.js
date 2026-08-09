@@ -53,11 +53,43 @@ test('uses the current Gemini structured-output REST wire shape with a model ove
 
   assert.equal(capturedUrl, 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent');
   assert.equal(capturedOptions.headers['x-goog-api-key'], 'test-only-api-key');
-  assert.equal(payload.generationConfig.responseFormat.text.mimeType, 'application/json');
+  assert.equal(payload.generationConfig.responseFormat.text.mimeType, 'APPLICATION_JSON');
   assert.equal(payload.generationConfig.responseFormat.text.schema.type, 'object');
   assert.equal(payload.generationConfig.thinkingConfig.thinkingLevel, 'minimal');
   assert.equal(payload.generationConfig.responseMimeType, undefined);
   assert.equal(payload.generationConfig.responseJsonSchema, undefined);
   assert.equal(payload.generationConfig.temperature, undefined);
   assert.equal(result.quote, validResponse().quote);
+});
+
+test('includes a bounded, redacted Gemini error body for runtime diagnosis', () => {
+  const context = {
+    getWebhookConfig_: () => ({
+      geminiModel: 'gemini-3.5-flash-lite',
+      geminiKey: 'secret-key'
+    }),
+    UrlFetchApp: {
+      fetch: () => ({
+        getResponseCode: () => 400,
+        getContentText: () => JSON.stringify({
+          error: { message: 'bad request secret-key' }
+        })
+      })
+    }
+  };
+  vm.createContext(context);
+  for (const file of ['Core.gs', 'GeminiService.gs']) {
+    vm.runInContext(
+      fs.readFileSync(path.join(root, 'webhook-app/src', file), 'utf8'),
+      context,
+      { filename: file }
+    );
+  }
+
+  assert.throws(
+    () => context.callGemini_([{ text: 'test prompt' }]),
+    error => error.message.includes('Gemini API 失敗：400') &&
+      error.message.includes('[redacted]') &&
+      !error.message.includes('secret-key')
+  );
 });
