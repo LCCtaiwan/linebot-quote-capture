@@ -2,13 +2,13 @@
 
 ## 目前狀態
 
-- C-005（2026-08-09）：Sheet provisioning 清理與 Gemini 預設模型更新完成，等待 runtime 整合驗收。
-- 範圍：新建 Sheet 在 schema 成功後只保留 Quotes／Events；既有 Sheet 的額外使用者分頁保留；預設模型改為 `gemini-3.5-flash-lite`。
-- 驗證：`npm test` 20/20 通過；`npm run verify` 通過；OAuth 後 Sheet schema、Webhook anonymous access 與 Review auth boundary 均 pass。
+- C-006（2026-08-09）：Review OAuth、`SPREADSHEET_ID` 與真實 Sheet 讀取驗收完成。
+- 範圍：已登入的 Review deployment 可正常載入收藏頁；空資料狀態顯示「共 0 則收藏」，不再出現缺少 Script Property 錯誤。
+- 驗證：Chrome 真實部署頁 DOM 驗收 pass；C-005 的 `npm test` 20/20 與 `npm run verify` 結果維持有效，本輪僅更新文件、未重跑程式測試。
 
 ## 進行中
 
-- 剩餘 Webhook／Review runtime Properties、LINE 與 Gemini 整合驗收。
+- 剩餘 Webhook runtime Properties、LINE 與 Gemini 整合驗收。
 
 ## 下一步
 
@@ -19,5 +19,5 @@
 
 - 真實 token、API key、Sheet ID 與部署 URL 不進入 Git。
 - 原圖不持久保存。
-- Review anonymous HTTP auth boundary 已 pass；Webhook anonymous GET 200 且為預期 missing `doGet`，access boundary 已 pass。
-- 使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties；代理未讀取或驗證內容。setup／Sheet schema 已完成，其餘 runtime Properties、LINE 與 Gemini 真實辨識仍未完成。
+- Review anonymous HTTP auth boundary 與登入後真實 Sheet 讀取均 pass；Webhook anonymous GET 200 且為預期 missing `doGet`，access boundary 已 pass。
+- 使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties；代理未讀取或驗證內容。setup／Sheet schema 已完成，剩餘 Webhook runtime Properties、LINE 與 Gemini 真實辨識仍未完成。

@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-完成 C-005 Sheet 清理與 Gemini 預設模型切片，準備 runtime Properties、LINE 與 Gemini 整合驗收。
+完成 C-006 Review OAuth、Property 與真實 Sheet 讀取驗收，準備 LINE 與 Gemini runtime 整合。
 
 ## Stack And Run Commands
 
@@ -52,6 +52,7 @@ npm run verify
 - 2026-08-09 C-005：Gemini 預設改為 `gemini-3.5-flash-lite`；複雜版面可手動覆寫 `gemini-3.6-flash`。
 - 2026-08-09 C-005：新建 Sheet 的空白預設分頁只在 Quotes／Events schema 成功後清除；既有 Sheet 額外分頁保留。
 - 2026-08-09 C-005：OAuth 後 Sheet schema／空白分頁清理、Webhook anonymous GET 200 expected missing `doGet`、Review auth boundary 均 pass。
+- 2026-08-09 C-006：Review OAuth 與 `SPREADSHEET_ID` 設定完成；真實 deployment 成功讀取 Sheet，顯示「共 0 則收藏」。
 
 ## Accepted / Rejected Outputs
 
@@ -62,8 +63,8 @@ npm run verify
 
 ## Current Checkpoint
 
-- C-005 本地程式與測試完成；真實 Sheet schema 與雙 deployment access boundary pass。
-- 使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties；代理未讀取或驗證內容。其餘 runtime Properties、LINE、Gemini 真實辨識尚未完成。
+- C-005 本地程式與測試完成；真實 Sheet schema、雙 deployment access boundary 與 Review 登入後讀取均 pass。
+- 使用者已回報將 `GEMINI_API_KEY` 存入 Webhook Script Properties；代理未讀取或驗證內容。剩餘 Webhook runtime Properties、LINE、Gemini 真實辨識尚未完成。
 
 ## Recommended Next Step
 
@@ -74,4 +75,5 @@ npm run verify
 - `npm test`：20/20 通過，包含新建空白分頁清理、既有使用者分頁保留與原有 schema／lock 契約。
 - `npm run verify`：通過。
 - C-005 模型、Sheet 與 HTTP checkpoint 已同步。
-- 真實服務驗收：Sheet／HTTP boundary pass；LINE／Gemini runtime 未執行。
+- C-006 Review 真實部署頁：OAuth、`SPREADSHEET_ID` 與 Sheet 讀取 pass；空資料狀態顯示「共 0 則收藏」。
+- 真實服務驗收：Sheet／HTTP boundary／Review runtime pass；LINE／Gemini runtime 未執行。

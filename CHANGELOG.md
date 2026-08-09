@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### C-006 — 2026-08-09
+
+- 使用者完成 Review OAuth 並在正確的 Review Apps Script project 儲存 `SPREADSHEET_ID`。
+- 真實 Review deployment 已能讀取共用 Sheet，空資料狀態顯示「共 0 則收藏」；原本的缺少 Script Property 錯誤已消失。
+- 驗證：Chrome 登入工作階段的實際部署頁 DOM 驗收通過；本輪只有文件更新，未重跑 C-005 的離線測試。
+
 ### C-005 — 2026-08-09
 
 - Gemini 預設模型改為 `gemini-3.5-flash-lite`，用於文件擷取、結構化 JSON 與 minimal thinking；複雜版面品質不足時可手動覆寫為 `gemini-3.6-flash`。
