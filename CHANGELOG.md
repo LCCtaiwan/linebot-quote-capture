@@ -8,6 +8,7 @@
 - 保留最新優先、搜尋、分類／標籤篩選、隨機回顧與 Google Apps Script 讀取邏輯。
 - 補上 UTF-8 與 viewport metadata；本機瀏覽器視覺檢查確認中文正常、桌面無水平溢出。
 - 已推送 Review 4 個檔案並更新既有線上 deployment 至版本 2；匿名開啟導向 Google 登入，權限邊界符合預期。
+- 已建立公開 repository `LCCtaiwan/linebot-quote-capture`，推送 `open-source/tutorial`；該分支目前是 repository 預設分支。
 
 ### C-012 — 2026-08-09
 

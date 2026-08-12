@@ -2,6 +2,8 @@
 
 這是一個單人自用、可開源的 LINE Bot。使用者上傳書頁、閱讀器截圖或海報後，Gemini 會擷取一則金句、分類與標籤；使用者在 LINE 確認後，內容才會寫入 Google Sheet，並可在另一個受 Google 帳號保護的 GAS Web App 回顧。
 
+公開 repository：[github.com/LCCtaiwan/linebot-quote-capture](https://github.com/LCCtaiwan/linebot-quote-capture)
+
 ## 核心流程
 
 1. LINE 圖片送到匿名部署的 Webhook GAS 專案。

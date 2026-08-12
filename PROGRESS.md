@@ -14,12 +14,12 @@
 ## 進行中
 
 - 重新傳送一張測試圖片，確認 Gemini 預覽、確認寫入 `Quotes`／`Events` 與 Review 顯示。
-- GitHub 發佈：目前尚無 `origin`，GitHub CLI 登入 token 已失效。
+- GitHub：已建立公開 repository 並推送 `open-source/tutorial`，目前該分支為預設分支。
 
 ## 下一步
 
 - 先通過 Gemini 圖片與 Sheet／Review 端到端驗收。
-- 使用者重新登入 GitHub 後，確認 `LICENSE` 的 MIT 版權持有人文字與公開範圍，再建立 remote、commit、push。
+- 後續可在 GitHub 檢查 README、LICENSE、教學 HTML 與公開範圍；不要把 runtime secrets 加入 repo。
 
 ## 備註
 
