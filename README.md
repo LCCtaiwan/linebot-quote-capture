@@ -19,7 +19,6 @@
 - `docs/SDD.md`：系統與資料設計。
 - `docs/DEPLOYMENT.md`：雙 GAS 專案設定、部署與人工驗收。
 - `docs/tutorial/`：金句收藏助手的可編輯教學內容與離線 HTML 成品。
-- `docs/develog.md`：開發決策與驗證紀錄。
 - `tests/`：可在本機執行的純邏輯測試。
 
 ## 本機驗證
